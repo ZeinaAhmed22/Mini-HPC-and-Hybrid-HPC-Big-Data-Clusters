@@ -9,7 +9,7 @@ This project implements a hybrid computing infrastructure combining traditional 
 
 ## Project Structure
 
-  project_hpc_hybrid_cluster/
+project_hpc_hybrid_cluster/
 ├── bio_classifier.py # PySpark ML pipeline script for disease classification
 ├── cleaned_bio_dataset.csv # Bioinformatics dataset
 ├── process_dataset_mpi.py # Python MPI script for analyzing gene expression data
@@ -114,12 +114,15 @@ This project implements a hybrid computing infrastructure combining traditional 
 
 ## Screenshots
 
-![SSH Setup] ![SSH1](https://github.com/user-attachments/assets/13408a81-6b97-4a3d-b5d7-d9f5d0806a33)
+![SSH Setup] 
+![SSH1](https://github.com/user-attachments/assets/13408a81-6b97-4a3d-b5d7-d9f5d0806a33)
 ![SHH2](https://github.com/user-attachments/assets/95348edb-87db-472e-8730-35f6ad70fc96)
 ![SHH3](https://github.com/user-attachments/assets/b820bb43-583a-4a90-8d94-249566a6cd27)
 
 ![MPI Output](screenshots/mpi_output.png)
-![Spark UI](screenshots/spark_ui.png)
+
+![Spark UI] ![WhatsApp Image 2025-06-04 at 21 12 18_45a27a3f](https://github.com/user-attachments/assets/e1a97632-5cb9-4bce-8a0d-b881ee9dc086)
+
 
 
 
