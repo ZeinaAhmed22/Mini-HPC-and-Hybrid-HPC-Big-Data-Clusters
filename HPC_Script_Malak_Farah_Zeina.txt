@@ -1,0 +1,364 @@
+Task 1: Mini-HPC Cluster Setup with MPI
+
+Step 1: Create Virtual Machines (VMs)
+Purpose: Simulate a cluster using 3 Ubuntu VMs (1 master + 2 workers)
+Name each VM: master_node, worker1, worker2
+OS Type: Linux (Ubuntu 64-bit)
+Memory: 2048 MB (2 GB) minimum per VM
+Disk: Dynamically allocated, 20+ GB
+Mount ISO: Use Ubuntu ISO as the installation image under Optical Drive
+
+Step 2: Configure Network Adapters
+Purpose: Enable internet and internal VM communication
+For each VM:
+Shut down the VM
+Go to Settings → Network → Adapter 1
+Enable NAT Adapter
+Set Adapter Type to: Intel PRO/1000 MT Desktop
+Choose your host’s Wi-Fi or Ethernet interface
+NAT allows internet access; adapter type ensures network compatibility.
+
+Step 3: Enable SSH and Install Required Software
+On all nodes (master and workers):
+bash
+# Check if SSH service is running
+sudo systemctl status ssh
+
+# Check if SSH is listening on port 22
+sudo netstat -tuln | grep 22
+
+# Check if firewall is blocking SSH
+sudo ufw status
+
+# Generate SSH keys for passwordless access
+ssh-keygen
+
+# Copy public key to worker nodes for passwordless login
+ssh-copy-id worker1@192.168.8.77
+ssh-copy-id worker2@192.168.8.78
+
+# Test connection
+ssh worker1@192.168.8.77
+ssh worker2@192.168.8.78
+
+# Update packages
+sudo apt update
+
+# Install Python, MPI, and development tools
+sudo apt install -y python3 python3-pip openmpi-bin libopenmpi-dev
+
+# Install Python libraries
+pip3 install mpi4py scikit-learn
+Step 4: Create MPI Hostfile
+This file lists all nodes and the number of processes they can handle.
+
+bash
+nano hostfile
+Content:
+192.168.162.130 slots=2
+192.168.162.131 slots=2
+192.168.162.132 slots=2
+Step 5: Setup Hostname Resolution
+Map IP addresses to hostnames on all nodes:
+
+bash
+sudo nano /etc/hosts
+Add:
+Copy
+Edit
+192.168.162.130 master
+192.168.162.131 worker1
+192.168.162.132 worker2
+Step 6: Create User and Setup SSH (as masternod)
+On worker nodes:
+
+bash
+# Switch to user masternod
+su - masternod
+
+# Generate SSH keys
+ssh-keygen -t rsa -f ~/.ssh/id_rsa -N ""
+
+# Copy public key to master and workers
+ssh-copy-id masternod@192.168.162.131
+ssh-copy-id masternod@192.168.162.132
+
+# Setup .ssh directory with correct permissions
+mkdir -p ~/.ssh
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+chown -R masternod:masternod ~/.ssh
+
+# Restart SSH service
+sudo systemctl restart ssh
+
+# Test hostname resolution
+ssh masternod@192.168.162.131 "hostname"
+ssh masternod@192.168.162.132 "hostname"
+Step 7: Rename and Create Admin User (on master)
+bash
+Copy
+Edit
+# Add backup admin
+sudo adduser tempadmin
+sudo usermod -aG sudo tempadmin
+
+# Rename default user to masternod
+sudo usermod -l masternod master-node
+sudo usermod -d /home/masternod -m masternod
+sudo groupmod -n masternod master-node
+
+Step 8: SSH Key Setup (Repeat on Master)
+bash
+# Generate key if not done already
+ssh-keygen
+
+# Add key to authorized_keys
+mkdir -p ~/.ssh
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+
+# Enable SSH and copy keys to all nodes
+sudo systemctl enable ssh
+sudo systemctl start ssh
+
+ssh-copy-id masternod@192.168.162.130
+ssh-copy-id masternod@192.168.162.131
+ssh-copy-id masternod@192.168.162.132
+
+# Test SSH access
+ssh masternod@192.168.162.130 "hostname"
+ssh masternod@192.168.162.131 "hostname"
+ssh masternod@192.168.162.132 "hostname"
+
+Step 9: Install and Test MPI + Run Script
+bash
+# Update system and install dependencies
+sudo apt update
+sudo apt install -y openmpi-bin libopenmpi-dev python3 python3-pip
+
+# Install required libraries
+pip3 install mpi4py
+
+# Test MPI and mpi4py
+mpirun --version
+python3 -c "from mpi4py import MPI; print('MPI ready on this node')"
+
+# Send dataset to workers
+scp cleaned_bio_dataset.csv masternod@192.168.162.131:~/
+scp cleaned_bio_dataset.csv masternod@192.168.162.132:~/
+
+# Create your processing script
+nano process_dataset_mpi.py
+
+# Install dependencies
+pip install --break-system-packages scikit-learn pandas mpi4py
+
+# Run the parallel script across 6 processes
+mpirun -np 6 --hostfile hostfile python3 process_dataset_mpi.py
+Step 10: Python MPI Script Overview
+This script does:
+
+Load and divide the dataset by rank
+
+Compare gene expression between healthy and diseased
+
+Train logistic regression for classification
+
+Final steps:
+bash
+# Copy the script to workers
+scp process_dataset_mpi.py masternod@192.168.162.131:~/
+scp process_dataset_mpi.py masternod@192.168.162.132:~/
+
+# Re-run script
+mpirun -np 6 --hostfile hostfile python3 process_dataset_mpi.py
+
+# SSH check for nodes
+ssh masternod@192.168.162.130
+ssh masternod@192.168.162.131
+ssh masternod@192.168.162.132
+
+Task 2: Hybrid HPC + Big Data Cluster with Docker and Spark
+Step 11: Install and Configure Docker on All Nodes
+Purpose: Install Docker to deploy containerized services across all VMs.
+bash
+# Update package list
+sudo apt update
+
+# Install Docker
+sudo apt install -y docker.io
+
+# Start the Docker service
+sudo systemctl start docker
+
+# Enable Docker to start at boot
+sudo systemctl enable docker
+
+# Add current user to the Docker group (to run docker without sudo)
+sudo usermod -aG docker $USER
+
+# Apply group change immediately
+newgrp docker
+
+# Verify Docker installation
+docker --version
+🔧 Repeat the above commands on master, worker1, and worker2.
+
+Step 12: Initialize Docker Swarm on Master Node
+Purpose: Create a Swarm cluster for container orchestration.
+bash
+# Initialize Swarm and advertise the master's IP
+docker swarm init --advertise-addr 192.168.162.130
+
+# Show token to join as a worker (copy this token)
+docker swarm join-token worker
+Output gives you a docker swarm join command with a token to run on workers.
+
+Step 13: Join Worker Nodes to the Swarm
+On each worker node, paste and run the join command shown above, e.g.:
+bash
+docker swarm join --token SWMTKN-1-... 192.168.162.130:2377
+This links the worker nodes to the master for coordinated cluster deployment.
+
+Step 14: Confirm All Nodes Are in the Swarm
+On the master node:
+bash
+docker node ls
+You should see all three nodes (master, worker1, worker2) listed with Ready status.
+
+Step 15: Deploy Apache Spark Cluster with Docker Stack
+Pull the Spark image:
+bash
+docker pull bitnami/spark:latest
+Create Spark Swarm configuration:
+
+bash
+nano spark-swarm.yml
+Example spark-swarm.yml:
+yaml
+
+version: '3.3'
+
+services:
+  spark-master:
+    image: bitnami/spark:latest
+    environment:
+      - SPARK_MODE=master
+    ports:
+      - "8081:8080"
+      - "7077:7077"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+
+  spark-worker:
+    image: bitnami/spark:latest
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+    deploy:
+      replicas: 2
+Deploy the Spark cluster:
+
+bash
+docker stack deploy -c spark-swarm.yml sparkcluster
+Verify services:
+
+bash
+docker service ls
+Visit Spark UI at: http://192.168.162.130:8081
+
+Step 16: Create the Spark Job Script
+bash
+nano bio_classifier.py
+Paste the following Spark ML code:
+
+python
+
+from pyspark.sql import SparkSession
+from pyspark.ml.feature import StringIndexer, VectorAssembler
+from pyspark.ml.classification import LogisticRegression
+from pyspark.ml.evaluation import MulticlassClassificationEvaluator
+
+print("✅ Starting Spark session")
+spark = SparkSession.builder.appName("BioClassifier").getOrCreate()
+
+print("✅ Loading dataset")
+df = spark.read.csv("cleaned_bio_dataset.csv", header=True, inferSchema=True)
+
+print("✅ Encoding label column")
+indexer = StringIndexer(inputCol="Disease_Status", outputCol="label")
+df = indexer.fit(df).transform(df)
+
+feature_cols = [col for col in df.columns if col not in ["Disease_Status", "label"]]
+assembler = VectorAssembler(inputCols=feature_cols, outputCol="features")
+df = assembler.transform(df)
+
+print("✅ Splitting data")
+train, test = df.randomSplit([0.7, 0.3], seed=42)
+
+print("Train size:", train.count())
+print("Test size:", test.count())
+
+if test.count() == 0:
+    print("❌ Test set is empty. Aborting.")
+    exit()
+
+print("✅ Training model")
+lr = LogisticRegression(featuresCol="features", labelCol="label")
+model = lr.fit(train)
+
+print("✅ Making predictions")
+predictions = model.transform(test)
+
+if predictions.filter(predictions.prediction.isNotNull()).count() == 0:
+    print("❌ No predictions made.")
+    exit()
+
+print("✅ Evaluating model")
+evaluator = MulticlassClassificationEvaluator(labelCol="label", predictionCol="prediction", metricName="accuracy")
+accuracy = evaluator.evaluate(predictions)
+
+print(f"\n✅ Model Accuracy: {accuracy:.2%}\n")
+
+# Save results
+with open("result.txt", "w") as f:
+    f.write(f"Model Accuracy: {accuracy:.2%}\n")
+
+Step 17: Transfer Dataset and Script into Spark Container
+Get the container ID of the Spark master:
+
+bash
+docker ps
+Copy script and dataset to the container:
+
+bash
+docker cp bio_classifier.py <container_id>:/opt/bitnami/spark/
+docker cp cleaned_bio_dataset.csv <container_id>:/opt/bitnami/spark/
+
+Step 18: Run the Spark Job
+bash
+# Access the container
+docker exec -it --user root <container_id> bash
+
+# Navigate to script directory
+cd /opt/bitnami/spark
+
+# Submit the Spark job
+spark-submit --master spark://spark-master:7077 bio_classifier.py
+
+# Exit the container
+exit
+
+Step 19: Retrieve Results
+bash
+# Copy result from container to host
+docker cp <container_id>:/opt/bitnami/spark/result.txt ./
+
+# View output
+cat result.txt
