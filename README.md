@@ -1,4 +1,4 @@
-# Hybrid HPC and Big Data Cluster for Bioinformatics Disease Classification
+# Hybrid HPC and Big Data Cluster for Bioinformatics Disease Classification 
 
 ## Project Overview
 
