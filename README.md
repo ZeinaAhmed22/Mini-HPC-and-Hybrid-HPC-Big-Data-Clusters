@@ -29,7 +29,7 @@ project_hpc_hybrid_cluster/
 ├── result.txt # PySpark output: final accuracy from Task 2
 ├── spark-swarm.yml # Docker stack file to deploy Spark master and workers
 └── README.md # This file
-/
+
 
 ## Technologies Used
 
@@ -120,8 +120,10 @@ project_hpc_hybrid_cluster/
 ![SHH2](https://github.com/user-attachments/assets/95348edb-87db-472e-8730-35f6ad70fc96)
 ![SHH3](https://github.com/user-attachments/assets/b820bb43-583a-4a90-8d94-249566a6cd27)
 
+
 [MPI Output]
 ![WhatsApp Image 2025-06-06 at 22 54 52_eca858be](https://github.com/user-attachments/assets/c634e8a9-d56c-4fed-b10b-412ae508e131)
+![WhatsApp Image 2025-06-06 at 22 54 52_712f19a2](https://github.com/user-attachments/assets/9eee7894-ee47-49c5-92e0-5fb4312d5f8d)
 
 
 [Spark UI] 
