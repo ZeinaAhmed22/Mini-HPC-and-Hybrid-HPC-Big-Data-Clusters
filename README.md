@@ -29,7 +29,7 @@ project_hpc_hybrid_cluster/
 ├── result.txt # PySpark output: final accuracy from Task 2
 ├── spark-swarm.yml # Docker stack file to deploy Spark master and workers
 └── README.md # This file
-
+/
 
 ## Technologies Used
 
