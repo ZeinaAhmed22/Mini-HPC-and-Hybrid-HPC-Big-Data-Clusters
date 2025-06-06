@@ -71,7 +71,7 @@ This project implements a hybrid computing infrastructure combining traditional 
    spark-submit --master spark://spark-master:7077 bio_classifier.py
    ```
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 * Python 3.8
 * OpenMPI & mpi4py
@@ -80,19 +80,19 @@ This project implements a hybrid computing infrastructure combining traditional 
 * Docker & Docker Swarm
 * VirtualBox + Ubuntu 20.04
 
-## 📈 Results
+## Results
 
 * **MPI Task**: Parallel logistic regression achieved consistent results across all nodes; expression comparison saved as CSV.
 * **Spark Task**: Logistic regression in PySpark returned accuracy metrics; evaluated on the same dataset in a scalable manner.
 * Output files: `expression_comparison_rankX.csv`, `ml_results_rankX.txt`, `result.txt`
 
-## 📸 Screenshots
+## Screenshots
 
 ![SSH Setup](screenshots/ssh_success.png)
 ![MPI Output](screenshots/mpi_output.png)
 ![Spark UI](screenshots/spark_ui.png)
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 project_hpc_hybrid_cluster/
@@ -114,12 +114,12 @@ project_hpc_hybrid_cluster/
 └── README.md
 ```
 
-## 👥 Authors
+## Authors
 
 * **Farah Ibrahim** – 221001140
 * **Malak Atef** – 221000906
 * **Zeina Ahmed** – 221000417
 
-## 📚 License
+## License
 
 This project is developed for educational purposes as part of the CBIO312: High Performance Computing course under Dr. Mohamed El-Sayeh, Spring 2025.
