@@ -10,25 +10,25 @@ This project implements a hybrid computing infrastructure combining traditional 
 ## Project Structure
 
 project_hpc_hybrid_cluster/
-├── bio_classifier.py                # PySpark ML pipeline script for disease classification
-├── cleaned_bio_dataset.csv          # Bioinformatics dataset
-├── process_dataset_mpi.py           # Python MPI script for analyzing gene expression data
-├── hostfile.unknown                 # Hostfile with node IPs and slots for MPI nodes and slot configuration
-├── spark-swarm.yml                  # Docker stack config for Spark cluster
+├── bio_classifier.py # PySpark ML pipeline script for disease classification
+├── cleaned_bio_dataset.csv # Bioinformatics dataset
+├── process_dataset_mpi.py # Python MPI script for analyzing gene expression data
+├── hostfile.unknown # Hostfile with node IPs and slots for MPI nodes and slot configuration
+├── spark-swarm.yml # Docker stack config for Spark cluster
 ├── HPC_Report_Malak_Farah_Zeina.pdf # Full documentation of the project
 ├── HPC_Script_Malak_Farah_Zeina.txt # Full setup commands and documentation
-├── HPC_PPT_Malak_Farah_Zeina.pdf   # Final presentation
-├── screenshots/                     # Images for results and verification
-│   ├── ssh_success.png              # Successful SSH setup
-│   ├── mpi_output.png               # MPI execution output
-│   └── spark_ui.png                 # Spark UI screenshot
-├── expression_comparison_rank0.csv  # MPI output: gene expression stats (rank 0)
-├── expression_comparison_rank1.csv  # MPI output: gene expression stats (rank 1)
-├── ml_results_rank0.txt             # MPI output: ML results (rank 0) from Task 1
-├── ml_results_rank1.txt             # MPI output: ML results (rank 1) from Task 1
-├── result.txt                       # PySpark output: final accuracy from Task 2
-├── spark-swarm.yml                  # Docker stack file to deploy Spark master and workers
-└── README.md                        # This file
+├── HPC_PPT_Malak_Farah_Zeina.pdf # Final presentation
+├── screenshots/ # Images for results and verification
+│ ├── ssh_success.png # Successful SSH setup
+│ ├── mpi_output.png # MPI execution output
+│ └── spark_ui.png # Spark UI screenshot
+├── expression_comparison_rank0.csv # MPI output: gene expression stats (rank 0)
+├── expression_comparison_rank1.csv # MPI output: gene expression stats (rank 1)
+├── ml_results_rank0.txt # MPI output: ML results (rank 0) from Task 1
+├── ml_results_rank1.txt # MPI output: ML results (rank 1) from Task 1
+├── result.txt # PySpark output: final accuracy from Task 2
+├── spark-swarm.yml # Docker stack file to deploy Spark master and workers
+└── README.md # This file
 
 
 ## Technologies Used
