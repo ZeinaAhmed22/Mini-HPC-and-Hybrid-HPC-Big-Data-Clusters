@@ -8,7 +8,7 @@ https://drive.google.com/drive/folders/1Ocsn8_dvt0PYnRgteys_ZWXuPzEGrfPH?usp=sha
 This project implements a hybrid computing infrastructure combining traditional High-Performance Computing (HPC) using MPI and a Big Data framework using Dockerized Apache Spark. It is designed to analyze bioinformatics datasets containing gene and protein expression levels for disease classification. The goal is to compare the effectiveness of MPI-based parallel processing and PySpark-based distributed machine learning workflows in a virtualized cluster environment.
 
 ## Project Structure
-
+```
 project_hpc_hybrid_cluster/
 ├── bio_classifier.py # PySpark ML pipeline script for disease classification
 ├── cleaned_bio_dataset.csv # Bioinformatics dataset
